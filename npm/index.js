@@ -316,7 +316,12 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
       height: null,
       showAlignMenu: true,
       alignMenuPosition: 'below',
-      alignMenuIcons: { left: '⟸', center: '⇔', right: '⟹', clear: 'x' },
+      alignMenuIcons: {
+        left: '<i class="bi bi-text-left"></i>',
+        center: '<i class="bi bi-text-center"></i>',
+        right: '<i class="bi bi-text-right"></i>',
+        clear: 'x'
+      },
     }
   },
 

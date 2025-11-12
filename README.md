@@ -75,9 +75,9 @@ const editor = new Editor({
           showAlignMenu: true,
           alignMenuPosition: 'below',
           alignMenuIcons: {
-            left: '<i class="icon-left"></i>',
-            center: '⇔',
-            right: '⟹',
+            left: '<i class="bi bi-text-left"></i>',
+            center: '<i class="bi bi-text-center"></i>',
+            right: '<i class="bi bi-text-right"></i>',
             clear: 'x',
           },
         };
