@@ -238,6 +238,19 @@ class ResizableImageView {
     } // else no text-align, inline flow
   }
 
+  applyResizePercent(percent) {
+    const naturalW = this.img.naturalWidth || Math.round(this.img.getBoundingClientRect().width);
+    const targetW = Math.max(20, Math.round(naturalW * percent));
+    const targetH = this.aspect ? Math.round(targetW / this.aspect) : Math.round(this.img.getBoundingClientRect().height);
+    const pos = this.getPos();
+    const tr = this.view.state.tr.setNodeMarkup(pos, null, {
+      ...this.node.attrs,
+      width: targetW,
+      height: targetH,
+    });
+    this.view.dispatch(tr);
+  }
+
   onPointerDown(event) {
     event.preventDefault();
     const direction = event.currentTarget.dataset.direction;
@@ -538,11 +551,3 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
     ];
   },
 });
-    this.applyResizePercent = (percent) => {
-      const naturalW = this.img.naturalWidth || Math.round(this.img.getBoundingClientRect().width);
-      const targetW = Math.max(20, Math.round(naturalW * percent));
-      const targetH = this.aspect ? Math.round(targetW / this.aspect) : Math.round(this.img.getBoundingClientRect().height);
-      const pos = this.getPos();
-      const tr = this.view.state.tr.setNodeMarkup(pos, null, { ...this.node.attrs, width: targetW, height: targetH });
-      this.view.dispatch(tr);
-    };
