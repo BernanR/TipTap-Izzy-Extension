@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>TipTap Izzy Resizable Image Demo</title>
     <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.css" />
     <style>
       body { font-family: Arial, sans-serif; margin: 20px; }
       .toolbar { margin-bottom: 10px; display: flex; gap: 8px; }
@@ -26,9 +27,9 @@
           <option value="center">Center</option>
           <option value="right">Right</option>
         </select>
-        <button id="align-left">⟸</button>
-        <button id="align-center">⇔</button>
-        <button id="align-right">⟹</button>
+        <button id="align-left"><i class="bi bi-text-left"></i></button>
+        <button id="align-center"><i class="bi bi-text-center"></i></button>
+        <button id="align-right"><i class="bi bi-text-right"></i></button>
       </label>
     </div>
 
@@ -52,11 +53,11 @@
                 showAlignMenu: true,
                 alignMenuPosition: 'below',
                 alignMenuIcons: { 
-                  left: '<i class="icon-left">i</i>', 
-                  center: '⇔', 
-                  right: '⟹', 
-                  clear: 'x',
-                  preview: '🔍'
+                  left: '<i class="bi bi-text-left"></i>', 
+                  center: '<i class="bi bi-text-center"></i>', 
+                  right: '<i class="bi bi-text-right"></i>', 
+                  clear: '<i class="bi bi-text-wrap"></i>',
+                  preview: '<i class="bi bi-zoom-in"></i>'
                 },
                 alignMenuButtonsHide: {
                   // left: true,
