@@ -75,10 +75,11 @@ const editor = new Editor({
           showAlignMenu: true,
           alignMenuPosition: 'below',
           alignMenuIcons: {
-            left: '<i class="bi bi-text-left"></i>',
-            center: '<i class="bi bi-text-center"></i>',
-            right: '<i class="bi bi-text-right"></i>',
+            left: '⟸',
+            center: '⇔',
+            right: '⟹',
             clear: 'x',
+            preview: '🔍',
           },
         };
       },
@@ -95,7 +96,7 @@ editor.commands.insertResizableImage({ src: 'https://picsum.photos/300/200', wid
 - `height: number | null` — default height in pixels when node `height` attr is missing.
 - `showAlignMenu: boolean` — whether the inline alignment menu is shown by default.
 - `alignMenuPosition: 'above' | 'below'` — where the menu appears relative to the image.
-- `alignMenuIcons: { left: string, center: string, right: string, clear: string }` — HTML strings for menu buttons.
+- `alignMenuIcons: { left: string, center: string, right: string, clear: string, preview: string }` — HTML strings for menu buttons.
 
 Reference:
 - Defined in `resizable-image.js:387-394`
@@ -118,6 +119,7 @@ These can be set per-node, overriding options.
 - `iconCenter: string | null`
 - `iconRight: string | null`
 - `iconClear: string | null`
+- `iconView: string | null` — HTML or text for the preview (lightbox) button.
 
 Reference: `resizable-image.js:358-372`
 

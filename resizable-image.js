@@ -115,21 +115,25 @@ class ResizableImageView {
     this.btnCenter = document.createElement('button');
     this.btnRight = document.createElement('button');
     this.btnClear = document.createElement('button');
+    this.btnView = document.createElement('button');
 
     this.btnLeft.innerHTML = (node.attrs.iconLeft != null ? node.attrs.iconLeft : (this.options.alignMenuIcons?.left ?? '⟸'));
     this.btnCenter.innerHTML = (node.attrs.iconCenter != null ? node.attrs.iconCenter : (this.options.alignMenuIcons?.center ?? '⇔'));
     this.btnRight.innerHTML = (node.attrs.iconRight != null ? node.attrs.iconRight : (this.options.alignMenuIcons?.right ?? '⟹'));
     this.btnClear.innerHTML = (node.attrs.iconClear != null ? node.attrs.iconClear : (this.options.alignMenuIcons?.clear ?? 'x'));
+    this.btnView.innerHTML = (node.attrs.iconView != null ? node.attrs.iconView : (this.options.alignMenuIcons?.preview ?? '🔍'));
 
     this.btnLeft.addEventListener('click', () => this.applyAlignAttr('left'));
     this.btnCenter.addEventListener('click', () => this.applyAlignAttr('center'));
     this.btnRight.addEventListener('click', () => this.applyAlignAttr('right'));
     this.btnClear.addEventListener('click', () => this.applyAlignAttr(null));
+    this.btnView.addEventListener('click', () => this.openModal());
 
     this.menu.appendChild(this.btnLeft);
     this.menu.appendChild(this.btnCenter);
     this.menu.appendChild(this.btnRight);
     this.menu.appendChild(this.btnClear);
+    this.menu.appendChild(this.btnView);
     
 
     this.updateMenuPosition(node.attrs.alignMenuPosition != null ? node.attrs.alignMenuPosition : (this.options && this.options.alignMenuPosition != null ? this.options.alignMenuPosition : 'below'));
@@ -148,6 +152,36 @@ class ResizableImageView {
 
     // Initial alignment
     this.applyAlignment(node.attrs.align);
+    this.modalOverlay = document.createElement('div');
+    this.modalOverlay.style.position = 'fixed';
+    this.modalOverlay.style.inset = '0';
+    this.modalOverlay.style.background = 'rgba(0,0,0,0.8)';
+    this.modalOverlay.style.display = 'flex';
+    this.modalOverlay.style.alignItems = 'center';
+    this.modalOverlay.style.justifyContent = 'center';
+    this.modalOverlay.style.zIndex = '9999';
+    this.modalOverlay.style.cursor = 'zoom-out';
+    this.modalImg = document.createElement('img');
+    this.modalImg.src = this.img.src;
+    this.modalImg.style.maxWidth = '90vw';
+    this.modalImg.style.maxHeight = '90vh';
+    this.modalImg.style.boxShadow = '0 8px 24px rgba(0,0,0,0.5)';
+    const modalClose = document.createElement('button');
+    modalClose.textContent = '✕';
+    modalClose.style.position = 'absolute';
+    modalClose.style.top = '16px';
+    modalClose.style.right = '16px';
+    modalClose.style.background = '#fff';
+    modalClose.style.border = 'none';
+    modalClose.style.borderRadius = '6px';
+    modalClose.style.padding = '6px 8px';
+    modalClose.style.cursor = 'pointer';
+    this.modalOverlay.appendChild(this.modalImg);
+    this.modalOverlay.appendChild(modalClose);
+    this.modalOverlay.addEventListener('click', (ev) => {
+      if (ev.target === this.modalOverlay) this.closeModal();
+    });
+    modalClose.addEventListener('click', () => this.closeModal());
   }
 
   updateMenuPosition(pos) {
@@ -291,6 +325,8 @@ class ResizableImageView {
     this.btnCenter.innerHTML = (node.attrs.iconCenter != null ? node.attrs.iconCenter : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.center : '⇔'));
     this.btnRight.innerHTML = (node.attrs.iconRight != null ? node.attrs.iconRight : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.right : '⟹'));
     this.btnClear.innerHTML = (node.attrs.iconClear != null ? node.attrs.iconClear : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.clear : 'x'));
+    if (this.btnView) this.btnView.innerHTML = (node.attrs.iconView != null ? node.attrs.iconView : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.preview : '🔍'));
+    if (this.modalImg) this.modalImg.src = this.img.src;
 
     this.aspect = (node.attrs.height && node.attrs.width)
       ? node.attrs.width / node.attrs.height
@@ -332,6 +368,20 @@ class ResizableImageView {
     this.overlay.style.pointerEvents = 'none';
   }
 
+  destroy() {
+    window.removeEventListener('pointermove', this._moveHandler);
+    window.removeEventListener('pointerup', this._upHandler);
+    if (this.modalOverlay && this.modalOverlay.parentNode) this.modalOverlay.parentNode.removeChild(this.modalOverlay);
+  }
+
+  openModal() {
+    if (!this.modalOverlay.parentNode) document.body.appendChild(this.modalOverlay);
+  }
+
+  closeModal() {
+    if (this.modalOverlay && this.modalOverlay.parentNode) this.modalOverlay.parentNode.removeChild(this.modalOverlay);
+  }
+
   stopEvent(event) {
     // Prevent ProseMirror from handling events from handles or menu
     return (
@@ -340,10 +390,7 @@ class ResizableImageView {
     );
   }
 
-  destroy() {
-    window.removeEventListener('pointermove', this._moveHandler);
-    window.removeEventListener('pointerup', this._upHandler);
-  }
+  
 }
 
 export const TiptapIzzyExtensionResizableImage = Node.create({
