@@ -94,7 +94,7 @@ class ResizableImageView {
     this.btnCenter.innerHTML = (node.attrs.iconCenter != null ? node.attrs.iconCenter : (this.options.alignMenuIcons?.center ?? '⇔'))
     this.btnRight.innerHTML = (node.attrs.iconRight != null ? node.attrs.iconRight : (this.options.alignMenuIcons?.right ?? '⟹'))
     this.btnClear.innerHTML = (node.attrs.iconClear != null ? node.attrs.iconClear : (this.options.alignMenuIcons?.clear ?? 'x'))
-    this.btnView.innerHTML = (this.options.alignMenuIcons?.preview ?? '🔍')
+    this.btnView.innerHTML = (node.attrs.iconView != null ? node.attrs.iconView : (this.options.alignMenuIcons?.preview ?? '🔍'))
     this.btnSize50.textContent = '50%'
     this.btnSize100.textContent = '100%'
 
@@ -280,8 +280,7 @@ class ResizableImageView {
     this.btnCenter.innerHTML = (node.attrs.iconCenter != null ? node.attrs.iconCenter : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.center : '⇔'))
     this.btnRight.innerHTML = (node.attrs.iconRight != null ? node.attrs.iconRight : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.right : '⟹'))
     this.btnClear.innerHTML = (node.attrs.iconClear != null ? node.attrs.iconClear : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.clear : 'x'))
-    if (this.btnView) this.btnView.innerHTML = (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.preview : '🔍')
-    this.btnView.innerHTML = this.options.iconView ?? '🔍'
+    if (this.btnView) this.btnView.innerHTML = (node.attrs.iconView != null ? node.attrs.iconView : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.preview : '🔍'))
     this.aspect = (node.attrs.height && node.attrs.width) ? node.attrs.width / node.attrs.height : this.aspect
     return true
   }
@@ -394,7 +393,7 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
   addCommands() {
     return {
       insertResizableImage:
-        ({ src, alt, title, width, height }) => ({ commands }) => {
+        ({ src, alt, title, width, height, id, class: className, iconView }) => ({ commands }) => {
           return commands.insertContent({
             type: this.name,
             attrs: {
@@ -403,13 +402,15 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
               title,
               width,
               height: height != null ? height : this.options.height,
+              id,
+              class: className,
               showAlignMenu: this.options.showAlignMenu,
               alignMenuPosition: this.options.alignMenuPosition,
               iconLeft: this.options.alignMenuIcons?.left,
               iconCenter: this.options.alignMenuIcons?.center,
               iconRight: this.options.alignMenuIcons?.right,
               iconClear: this.options.alignMenuIcons?.clear,
-              iconView: this.options.alignMenuIcons?.preview,
+              iconView: iconView != null ? iconView : this.options.alignMenuIcons?.preview,
             },
           })
         },
