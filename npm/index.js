@@ -41,6 +41,8 @@ class ResizableImageView {
     this.img.style.display = 'block'
     this.img.style.userSelect = 'none'
     this.img.style.pointerEvents = 'none'
+    if (node.attrs.id) this.img.id = node.attrs.id
+    if (node.attrs.class) this.img.className = node.attrs.class
     if (node.attrs.width) this.img.style.width = node.attrs.width + 'px'
     if (node.attrs.height) {
       this.img.style.height = node.attrs.height + 'px'
@@ -354,6 +356,8 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
       title: { default: null },
       width: { default: null },
       height: { default: null },
+      id: { default: null },
+      class: { default: null },
       align: { default: 'left' },
       showAlignMenu: { default: null },
       alignMenuPosition: { default: null },
@@ -361,6 +365,7 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
       iconCenter: { default: null },
       iconRight: { default: null },
       iconClear: { default: null },
+      iconView: { default: null },
     }
   },
 

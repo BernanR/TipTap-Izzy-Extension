@@ -444,6 +444,7 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
       iconCenter: { default: null },
       iconRight: { default: null },
       iconClear: { default: null },
+      iconView: { default: null },
     };
   },
 
@@ -488,6 +489,7 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
               iconCenter: this.options.alignMenuIcons?.center,
               iconRight: this.options.alignMenuIcons?.right,
               iconClear: this.options.alignMenuIcons?.clear,
+              iconView: this.options.alignMenuIcons?.preview,
             },
           });
         },
@@ -576,6 +578,7 @@ export const TiptapIzzyExtensionResizableImage = Node.create({
                 iconCenter: this.options.alignMenuIcons?.center,
                 iconRight: this.options.alignMenuIcons?.right,
                 iconClear: this.options.alignMenuIcons?.clear,
+                iconView: this.options.alignMenuIcons?.preview,
               });
               changed = true;
             }
