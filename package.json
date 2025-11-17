@@ -8,7 +8,13 @@
   "exports": {
     ".": "./npm/index.js"
   },
-  "homepage": "https://bernanr.github.io/TipTap-Extension-Izzy-Resizable-Image",
+  "homepage": "https://startinn.github.io/TipTap-Extension-Izzy-Resizable-Image/",
+  "bugs": {
+    "url": "https://github.com/startinn/TipTap-Extension-Izzy-Resizable-Image/issues"
+  },
+  "publishConfig": {
+    "registry": "https://registry.npmjs.org/"
+  },
   "files": [
     "npm/index.js",
     "README.md"
