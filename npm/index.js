@@ -153,7 +153,8 @@ class ResizableImageView {
     if (!hidden.size50) this.menu.appendChild(this.btnSize50)
     if (!hidden.size100) this.menu.appendChild(this.btnSize100)
 
-    this.updateMenuPosition(node.attrs.alignMenuPosition != null ? node.attrs.alignMenuPosition : (this.options && this.options.alignMenuPosition != null ? this.options.alignMenuPosition : 'below'))
+    const menuVerticalPos = node.attrs.alignMenuPosition != null ? node.attrs.alignMenuPosition : (this.options && this.options.alignMenuPosition != null ? this.options.alignMenuPosition : 'below')
+    this.updateMenuPosition(menuVerticalPos, node.attrs.align)
 
     this.dom.addEventListener('dragstart', (e) => {
       const dragImg = document.createElement('canvas')
@@ -257,9 +258,9 @@ class ResizableImageView {
     this.view.dispatch(tr)
   }
 
-  updateMenuPosition(pos) {
+  updateMenuPosition(verticalPos, align) {
     this.menu.classList.remove('menu-above', 'menu-below')
-    if (pos === 'above') {
+    if (verticalPos === 'above') {
       this.menu.classList.add('menu-above')
       this.menu.style.top = '-32px'
       this.menu.style.bottom = ''
@@ -267,6 +268,20 @@ class ResizableImageView {
       this.menu.classList.add('menu-below')
       this.menu.style.bottom = '-32px'
       this.menu.style.top = ''
+    }
+
+    // Horizontal positioning based on image alignment
+    this.menu.style.left = ''
+    this.menu.style.right = ''
+    this.menu.style.transform = ''
+    if (align === 'left') {
+      this.menu.style.left = '0px'
+    } else if (align === 'right') {
+      this.menu.style.right = '0px'
+    } else {
+      // center or default
+      this.menu.style.left = '50%'
+      this.menu.style.transform = 'translateX(-50%)'
     }
   }
 
@@ -296,22 +311,9 @@ class ResizableImageView {
   }
 
   applyResizePercent(percent) {
-    const naturalW = this.img.naturalWidth || Math.round(this.img.getBoundingClientRect().width)
-    const targetW = Math.max(20, Math.round(naturalW * percent))
-    const targetH = this.aspect ? Math.round(targetW / this.aspect) : Math.round(this.img.getBoundingClientRect().height)
+    const percentValue = Math.round(Math.max(0.05, Math.min(1, percent)) * 100) + '%'
     const pos = this.getPos()
-    const maxAllowedWidth = toFiniteNumber(this.options?.maxAllowedWidth)
-    if (maxAllowedWidth != null && targetW > maxAllowedWidth) {
-      const tr = this.view.state.tr.setNodeMarkup(pos, null, {
-        ...this.node.attrs,
-        width: '100%',
-        height: 'auto',
-      })
-      this.view.dispatch(tr)
-      return
-    }
-
-    const tr = this.view.state.tr.setNodeMarkup(pos, null, { ...this.node.attrs, width: targetW, height: targetH })
+    const tr = this.view.state.tr.setNodeMarkup(pos, null, { ...this.node.attrs, width: percentValue, height: 'auto' })
     this.view.dispatch(tr)
   }
 
@@ -392,7 +394,8 @@ class ResizableImageView {
     applyDimensionStyle(this.img, 'width', node.attrs.width)
     applyDimensionStyle(this.img, 'height', node.attrs.height)
     this.applyAlignment(node.attrs.align)
-    this.updateMenuPosition(node.attrs.alignMenuPosition != null ? node.attrs.alignMenuPosition : (this.options && this.options.alignMenuPosition != null ? this.options.alignMenuPosition : 'below'))
+    const menuVerticalPos = node.attrs.alignMenuPosition != null ? node.attrs.alignMenuPosition : (this.options && this.options.alignMenuPosition != null ? this.options.alignMenuPosition : 'below')
+    this.updateMenuPosition(menuVerticalPos, node.attrs.align)
     this.btnLeft.innerHTML = (node.attrs.iconLeft != null ? node.attrs.iconLeft : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.left : '⟸'))
     this.btnCenter.innerHTML = (node.attrs.iconCenter != null ? node.attrs.iconCenter : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.center : '⇔'))
     this.btnRight.innerHTML = (node.attrs.iconRight != null ? node.attrs.iconRight : (this.options && this.options.alignMenuIcons ? this.options.alignMenuIcons.right : '⟹'))
