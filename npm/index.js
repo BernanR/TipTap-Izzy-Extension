@@ -44,6 +44,11 @@ function isWidth100Percent(value) {
   return String(value).trim() === '100%'
 }
 
+function isPercentWidth(value) {
+  if (value == null) return false
+  return /^\d+(\.\d+)?%$/.test(String(value).trim())
+}
+
 class ResizableImageView {
   constructor(node, view, getPos, options) {
     this.node = node
@@ -80,7 +85,7 @@ class ResizableImageView {
     this.img.style.pointerEvents = 'none'
     if (node.attrs.id) this.img.id = node.attrs.id
     if (node.attrs.class) this.img.className = node.attrs.class
-    applyDimensionStyle(this.img, 'width', node.attrs.width)
+    this.applyWidthLayout(node.attrs.width)
     if (node.attrs.height) {
       applyDimensionStyle(this.img, 'height', node.attrs.height)
     } else if (this.options && this.options.height) {
@@ -310,6 +315,17 @@ class ResizableImageView {
     }
   }
 
+  applyWidthLayout(widthValue) {
+    if (isPercentWidth(widthValue)) {
+      applyDimensionStyle(this.inner, 'width', widthValue)
+      applyDimensionStyle(this.img, 'width', '100%')
+      return
+    }
+
+    this.inner.style.removeProperty('width')
+    applyDimensionStyle(this.img, 'width', widthValue)
+  }
+
   applyResizePercent(percent) {
     const percentValue = Math.round(Math.max(0.05, Math.min(1, percent)) * 100) + '%'
     const pos = this.getPos()
@@ -358,6 +374,7 @@ class ResizableImageView {
         newHeight = Math.round(newWidth / this.aspect)
       }
     }
+    this.inner.style.width = newWidth + 'px'
     this.img.style.width = newWidth + 'px'
     this.img.style.height = newHeight + 'px'
   }
@@ -391,7 +408,7 @@ class ResizableImageView {
     this.node = node
     if (node.attrs.src !== this.img.src) this.img.src = node.attrs.src
     this.img.alt = node.attrs.alt || ''
-    applyDimensionStyle(this.img, 'width', node.attrs.width)
+    this.applyWidthLayout(node.attrs.width)
     applyDimensionStyle(this.img, 'height', node.attrs.height)
     this.applyAlignment(node.attrs.align)
     const menuVerticalPos = node.attrs.alignMenuPosition != null ? node.attrs.alignMenuPosition : (this.options && this.options.alignMenuPosition != null ? this.options.alignMenuPosition : 'below')

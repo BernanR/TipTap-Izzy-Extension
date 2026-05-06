@@ -48,6 +48,11 @@ function isWidth100Percent(value) {
   return String(value).trim() === '100%';
 }
 
+function isPercentWidth(value) {
+  if (value == null) return false;
+  return /^\d+(\.\d+)?%$/.test(String(value).trim());
+}
+
 // Helper to map align to flex justification
 function getJustifyContentForAlign(align) {
   switch (align) {
@@ -102,7 +107,7 @@ class ResizableImageView {
     if (node.attrs.id) this.img.id = node.attrs.id;
     if (node.attrs.class) this.img.className = node.attrs.class;
 
-    applyDimensionStyle(this.img, 'width', node.attrs.width);
+    this.applyWidthLayout(node.attrs.width);
     if (node.attrs.height) {
       applyDimensionStyle(this.img, 'height', node.attrs.height);
     } else if (this.options && this.options.height) {
@@ -358,20 +363,20 @@ class ResizableImageView {
     } // else no text-align, inline flow
   }
 
-  applyResizePercent(percent) {
-    const percentValue = Math.round(Math.max(0.05, Math.min(1, percent)) * 100) + '%';
-    const pos = this.getPos();
-    const maxAllowedWidth = toFiniteNumber(this.options && this.options.maxAllowedWidth);
-    if (maxAllowedWidth != null && targetW > maxAllowedWidth) {
-      const tr = this.view.state.tr.setNodeMarkup(pos, null, {
-        ...this.node.attrs,
-        width: '100%',
-        height: 'auto',
-      });
-      this.view.dispatch(tr);
+  applyWidthLayout(widthValue) {
+    if (isPercentWidth(widthValue)) {
+      applyDimensionStyle(this.inner, 'width', widthValue);
+      applyDimensionStyle(this.img, 'width', '100%');
       return;
     }
 
+    this.inner.style.removeProperty('width');
+    applyDimensionStyle(this.img, 'width', widthValue);
+  }
+
+  applyResizePercent(percent) {
+    const percentValue = Math.round(Math.max(0.05, Math.min(1, percent)) * 100) + '%';
+    const pos = this.getPos();
     const tr = this.view.state.tr.setNodeMarkup(pos, null, {
       ...this.node.attrs,
       width: percentValue,
@@ -432,6 +437,7 @@ class ResizableImageView {
     }
 
     // Live preview
+    this.inner.style.width = newWidth + 'px';
     this.img.style.width = newWidth + 'px';
     this.img.style.height = newHeight + 'px';
   }
@@ -477,7 +483,7 @@ class ResizableImageView {
     this.img.alt = node.attrs.alt || '';
     if (node.attrs.id) this.img.id = node.attrs.id; else this.img.removeAttribute('id');
     this.img.className = node.attrs.class || '';
-    applyDimensionStyle(this.img, 'width', node.attrs.width);
+    this.applyWidthLayout(node.attrs.width);
     applyDimensionStyle(this.img, 'height', node.attrs.height);
 
     // update alignment styles and menu
